@@ -1,3 +1,13 @@
+<!--
+  @name              : chipsetConfiguratorListButton.html
+  @author            : pchannab
+  @usage             : 
+  @last modified on  : 06-20-2022
+  @last modified by  : pchannab
+  Modifications Log
+  Ver   Date         Author     Modification
+  1.0   06-20-2022   pchannab   Initial Version
+-->
 <template>
     <div onkeyup={handleSearch}>
         <lightning-input
@@ -8,7 +18,7 @@
                 placeholder="Search Chip Family"                      
             ></lightning-input>
     </div>
-    <template if:true={searchResults}>
+    <template if:true={searchResultsDropdown}>
         <div id="listbox-id-9" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
             <ul class="slds-listbox slds-listbox_vertical" role="presentation">
                 <template for:each={searchResults} for:item="result">
@@ -24,4 +34,17 @@
             </ul>
         </div>        
     </template>
+
+    <lightning-datatable 
+        show-row-number-column	
+        hide-checkbox-column
+        key-field="Id"
+        data={searchResults}
+        columns={searchResultsTableColumns}
+        onrowaction={callRowAction}
+        sorted-by={sortedBy}
+        sorted-direction={sortDirection}
+        default-sort-direction={defaultSortDirection}
+        onsort={onHandleSort}>        
+        </lightning-datatable>
 </template>
