@@ -2,7 +2,7 @@
   @name              : chipsetConfiguratorListButton.html
   @author            : pchannab
   @usage             : 
-  @last modified on  : 06-20-2022
+  @last modified on  : 06-22-2022
   @last modified by  : pchannab
   Modifications Log
   Ver   Date         Author     Modification
@@ -34,17 +34,31 @@
             </ul>
         </div>        
     </template>
-
+    <div class="slds-p-around_medium"><lightning-badge label="Selected Products" icon-name="utility:table_settings"></lightning-badge></div>
+    <div class="slds-p-around_medium" style="height:300px">
+      <lightning-datatable
+      show-row-number-column
+      hide-checkbox-column
+      key-field="Id"
+      data={recordsAdded}
+      columns={selectedProductsTableColumn}
+      >
+      </lightning-datatable>
+    </div>
+    <div class="slds-p-around_medium" style="height:700px">
+    <lightning-badge label="Search Results" icon-name="utility:table_settings"></lightning-badge>
     <lightning-datatable 
         show-row-number-column	
         hide-checkbox-column
         key-field="Id"
-        data={searchResults}
+        data={collection}
         columns={searchResultsTableColumns}
         onrowaction={callRowAction}
         sorted-by={sortedBy}
         sorted-direction={sortDirection}
         default-sort-direction={defaultSortDirection}
-        onsort={onHandleSort}>        
+        onsort={onHandleSort}
+        oncellchange={getSelectedTBDProductRow}>        
         </lightning-datatable>
+      </div>
 </template>

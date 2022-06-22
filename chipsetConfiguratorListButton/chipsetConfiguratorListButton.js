@@ -2,15 +2,16 @@
  * @description       : 
  * @author            : pchannab
  * @usage             : 
- * @last modified on  : 06-20-2022
+ * @last modified on  : 06-22-2022
  * @last modified by  : pchannab
 **/
-import { LightningElement } from 'lwc';
+import { LightningElement, track } from 'lwc';
 import search from '@salesforce/apex/ChipsetConfiguratorCmpController.searchProducts';
 
 const searchResultsTableColumns = [
     {label: 'Chip Family', fieldName: 'Chip_Family__c', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
     {label: 'Name', fieldName: 'Name', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
+    {label: 'Is TBD', editable: true, fieldName: 'Is_TBD', type: 'boolean'},
     {label: 'Action', type: "button", typeAttributes: {  
         label: 'Add',  
         name: 'Add',  
@@ -22,13 +23,22 @@ const searchResultsTableColumns = [
     }}  
 ];
 
+const selectedProductsTableColumn = [
+    {label: 'Chip Family', fieldName: 'Chip_Family__c', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'Name', fieldName: 'Name', editable: false, sortable: false, hideDefaultActions: true, wrapText: true}
+];
+
 export default class ChipsetConfiguratorListButton extends LightningElement {
 
     searchResults;
+    collection;
     searchTerm;
     selectedRecId;
     selectedRecName;
+    recordsAdded = [];    
+    tbdRecordsAdded = [];
     searchResultsTableColumns = searchResultsTableColumns;
+    selectedProductsTableColumn = selectedProductsTableColumn;
     searchResultsDropdown = false;
     defaultSortDirection = 'asc';
     sortDirection = 'asc';
@@ -51,9 +61,10 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
             this.searchTerm = queryTerm;
             search({chipName : queryTerm})
             .then(result => {            
-                // console.log('JSON '+JSON.stringify(result));
+                console.log('JSON '+JSON.stringify(result));
                 if(result.length > 0 && result !== undefined) {
                     this.searchResults = result;
+                    this.collection = this.searchResults;
                     this.searchResultsDropdown = true;
                     if(event.keyCode === 13){
                         this.searchResultsDropdown = false;
@@ -92,9 +103,46 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
         this.searchResultsDropdown = false;
     }
 
-    callRowAction(event) {
+    callRowAction(event) {            
         const recId = event.detail.row.Id;
         console.log('Add clicked: '+recId);
+        // this.collection.splice(this.collection.findIndex(obj => obj.Id === recId), 1);
+        // console.log(this.searchResults.findIndex(obj => {
+        //         return obj.Id === this.tbdRecordsAdded[0].Id;}));
+        
+        if((this.tbdRecordsAdded.length === 1 && recId === this.tbdRecordsAdded[0].Id) || (this.tbdRecordsAdded.length === 0 && recId)) {
+            this.tbdRecordsAdded = [];
+            this.removeRowsFromSearchResultsTable(recId);
+        }        
+        
+        // this.recordsAdded
+    }
+
+    removeRowsFromSearchResultsTable(record) {
+        console.log('Record being added: '+record);
+        // this.addRecordsToSelectedProductsTable(record);
+        let newData = JSON.parse(JSON.stringify(this.collection));
+        newData = newData.filter((row) => row.Id !== record);
+        let addedData = JSON.parse(JSON.stringify(this.collection));        
+        addedData = addedData.filter((row) => row.Id === record);
+        if(addedData.length > 0) {
+            this.addRecordsToSelectedProductsTable(addedData[0]);
+            
+            console.log('Here: '+JSON.stringify(this.recordsAdded));
+        }
+        this.collection = newData;
+        console.log('Removed Item: '+JSON.stringify(this.collection));
+    }
+
+    addRecordsToSelectedProductsTable(addedRecord) {   
+        this.recordsAdded = this.recordsAdded.concat(addedRecord);
+        console.log('Added Record: '+JSON.stringify(this.recordsAdded));
+    }
+
+    getSelectedTBDProductRow(event) {
+        console.log('Checkbox: '+JSON.stringify(event.detail.draftValues));
+        this.tbdRecordsAdded.push(event.detail.draftValues[0]);
+        console.log('tbdRecordsAdded: '+JSON.stringify(this.tbdRecordsAdded));
     }
 
     sortBy(field, reverse, primer) {
@@ -115,10 +163,10 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
 
     onHandleSort(event) {
         const { fieldName: sortedBy, sortDirection } = event.detail;
-        const cloneData = [...this.searchResults];
+        const cloneData = [...this.collection];
 
         cloneData.sort(this.sortBy(sortedBy, sortDirection === 'asc' ? 1 : -1));
-        this.searchResults = cloneData;
+        this.collection = cloneData;
         this.sortDirection = sortDirection;
         this.sortedBy = sortedBy;
     }
