@@ -61,7 +61,7 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
             this.searchTerm = queryTerm;
             search({chipName : queryTerm})
             .then(result => {            
-                console.log('JSON '+JSON.stringify(result));
+                // console.log('JSON '+JSON.stringify(result));
                 if(result.length > 0 && result !== undefined) {
                     this.searchResults = result;
                     this.collection = this.searchResults;
@@ -96,16 +96,16 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
     }
 
     setSelectedRecord(event) {
-        console.log('click');
+        // console.log('click');
         this.selectedRecId = event.currentTarget.dataset.id;
         this.selectedRecName = event.currentTarget.dataset.name;
-        console.log('Selected Record: '+this.selectedRecId+' '+this.selectedRecName);
+        // console.log('Selected Record: '+this.selectedRecId+' '+this.selectedRecName);
         this.searchResultsDropdown = false;
     }
 
     callRowAction(event) {            
         const recId = event.detail.row.Id;
-        console.log('Add clicked: '+recId);
+        // console.log('Add clicked: '+recId);
         // this.collection.splice(this.collection.findIndex(obj => obj.Id === recId), 1);
         // console.log(this.searchResults.findIndex(obj => {
         //         return obj.Id === this.tbdRecordsAdded[0].Id;}));
@@ -119,7 +119,7 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
     }
 
     removeRowsFromSearchResultsTable(record) {
-        console.log('Record being added: '+record);
+        // console.log('Record being added: '+record);
         // this.addRecordsToSelectedProductsTable(record);
         let newData = JSON.parse(JSON.stringify(this.collection));
         newData = newData.filter((row) => row.Id !== record);
@@ -128,21 +128,21 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
         if(addedData.length > 0) {
             this.addRecordsToSelectedProductsTable(addedData[0]);
             
-            console.log('Here: '+JSON.stringify(this.recordsAdded));
+            // console.log('Here: '+JSON.stringify(this.recordsAdded));
         }
         this.collection = newData;
-        console.log('Removed Item: '+JSON.stringify(this.collection));
+        // console.log('Removed Item: '+JSON.stringify(this.collection));
     }
 
     addRecordsToSelectedProductsTable(addedRecord) {   
         this.recordsAdded = this.recordsAdded.concat(addedRecord);
-        console.log('Added Record: '+JSON.stringify(this.recordsAdded));
+        // console.log('Added Record: '+JSON.stringify(this.recordsAdded));
     }
 
     getSelectedTBDProductRow(event) {
-        console.log('Checkbox: '+JSON.stringify(event.detail.draftValues));
+        // console.log('Checkbox: '+JSON.stringify(event.detail.draftValues));
         this.tbdRecordsAdded.push(event.detail.draftValues[0]);
-        console.log('tbdRecordsAdded: '+JSON.stringify(this.tbdRecordsAdded));
+        // console.log('tbdRecordsAdded: '+JSON.stringify(this.tbdRecordsAdded));
     }
 
     sortBy(field, reverse, primer) {
