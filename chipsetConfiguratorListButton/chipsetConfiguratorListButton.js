@@ -128,7 +128,7 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
     }
 
     removeRowsFromSearchResultsTable(record) {
-        console.log('Record being added: '+record);
+        // console.log('Record being added: '+record);
         // this.addRecordsToSelectedProductsTable(record);
         let newData = JSON.parse(JSON.stringify(this.collection));
         newData = newData.filter((row) => row.Id !== record);
