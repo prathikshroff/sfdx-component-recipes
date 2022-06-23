@@ -2,39 +2,45 @@
   @name              : chipsetConfiguratorListButton.html
   @author            : pchannab
   @usage             : 
-  @last modified on  : 06-22-2022
+  @last modified on  : 06-23-2022
   @last modified by  : pchannab
   Modifications Log
   Ver   Date         Author     Modification
   1.0   06-20-2022   pchannab   Initial Version
 -->
 <template>
-    <div onkeyup={handleSearch}>
-        <lightning-input
-                name="search-chip-family"
-                label="Search Chip Family"
-                type="search"
-                value={selectedRecName}
-                placeholder="Search Chip Family"                      
-            ></lightning-input>
-    </div>
-    <template if:true={searchResultsDropdown}>
-        <div id="listbox-id-9" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
-            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                <template for:each={searchResults} for:item="result">
-                  <li key={result.Id} role="presentation" class="slds-listbox__item">
-                    <div data-id={result.Id} data-name={result.Name} onclick={setSelectedRecord} class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
-                      <span class="slds-media__figure slds-listbox__option-icon"></span>
-                      <span class="slds-media__body">
-                        <span class="slds-truncate" title={result.Name}>{result.Name}</span>
-                      </span>
-                    </div>
-                  </li>
-                </template>
-            </ul>
+  <lightning-layout>
+    <lightning-layout-item size="4" style="position:relative">
+        <div onkeyup={handleSearch}>
+            <lightning-input
+                    name="search-chip-family"
+                    label="Search Chip Family"
+                    type="search"
+                    value={selectedRecName}
+                    placeholder="Search Chip Family"            
+                ></lightning-input>
         </div>        
-    </template>
-    <div class="slds-p-around_medium"><lightning-badge label="Selected Products" icon-name="utility:table_settings"></lightning-badge></div>
+      <template if:true={searchResultsDropdown}>
+        <!-- <div class="test"> -->
+          <div id="listbox-id-9" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid" role="listbox">
+              <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                  <template for:each={searchResults} for:item="result">
+                    <li key={result.Id} role="presentation" class="slds-listbox__item">
+                      <div data-id={result.Id} data-name={result.Name} onclick={setSelectedRecord} class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                        <span class="slds-media__figure slds-listbox__option-icon"></span>
+                        <span class="slds-media__body">
+                          <span class="slds-truncate" title={result.Name}>{result.Name}</span>
+                        </span>
+                      </div>
+                    </li>
+                  </template>
+              </ul>
+          </div>        
+        <!-- </div> -->
+      </template>
+    </lightning-layout-item>
+    </lightning-layout>
+    <div class="slds-p-around_medium slds-m-top_large"><lightning-badge label="Selected Products" icon-name="utility:table_settings"></lightning-badge></div>
     <div class="slds-p-around_medium" style="height:300px">
       <lightning-datatable
       show-row-number-column
@@ -60,5 +66,5 @@
         onsort={onHandleSort}
         oncellchange={getSelectedTBDProductRow}>        
         </lightning-datatable>
-      </div>
+      </div>      
 </template>
