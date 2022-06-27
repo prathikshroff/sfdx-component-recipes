@@ -2,29 +2,39 @@
  * @description       : 
  * @author            : pchannab
  * @usage             : 
- * @last modified on  : 06-23-2022
+ * @last modified on  : 06-24-2022
  * @last modified by  : pchannab
 **/
 import { LightningElement, track } from 'lwc';
 import search from '@salesforce/apex/ChipsetConfiguratorCmpController.searchProducts';
 
 const searchResultsTableColumns = [
-    {label: 'Chip Family', fieldName: 'Chip_Family__c', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
+    {label: 'Chip Family', fieldName: 'ChipFamily', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
     {label: 'Name', fieldName: 'Name', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
-    {label: 'Is TBD', editable: true, fieldName: 'Is_TBD', type: 'boolean'},
-    {label: 'Action', type: "button", typeAttributes: {  
+    {label: 'Primary', fieldName: 'Primary', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {type: "button", typeAttributes: {  
         label: 'Add',  
         name: 'Add',  
         title: 'Add',  
         disabled: false,  
         value: 'add',  
         iconPosition: 'left',
-        variant: 'brand-outline'
-    }}  
+        variant: 'brand-outline',
+    }}, 
+    {type: "button", typeAttributes: {  
+        label: 'Add TBD',  
+        name: 'Add TBD',  
+        title: 'Add TBD',  
+        disabled: false,  
+        value: 'addTbd',  
+        iconPosition: 'left',
+        variant: 'brand-outline',
+        class: {fieldName: 'showTBDButton'}
+    }}
 ];
 
 const selectedProductsTableColumn = [
-    {label: 'Chip Family', fieldName: 'Chip_Family__c', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'Chip Family', fieldName: 'ChipFamily', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
     {label: 'Name', fieldName: 'Name', editable: false, sortable: false, hideDefaultActions: true, wrapText: true}
 ];
 
@@ -50,6 +60,63 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
         const urlParams = new URLSearchParams(queryString);
         console.log('URL: '+urlParams.get('oppId'));
     }
+
+    // constructor() {
+    //     super();
+    //     this.searchResultsTableColumns = [
+    //             {label: 'Chip Family', fieldName: 'Chip_Family__c', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
+    //             {label: 'Name', fieldName: 'Name', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    //             {label: 'Primary', fieldName: 'CP_Family_Membership__c', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    //             {label: 'Is TBD', editable: true, fieldName: 'Is_TBD', type: 'boolean'},
+    //             {label: 'Action', type: "button", typeAttributes: {  
+    //                 rowActions: this.getRowActions
+    //             }}  
+    //         ];
+    // }
+
+    // getRowActions(row, doneCallback) {
+    //     const actions = [];
+    //         if (row['CP_Family_Membership__c'] === 'Primary') {
+    //             actions.push({
+    //                 'label': 'Add',
+    //                 'title': 'Add',
+    //                 'name': 'Add',
+    //                 'disabled': false,
+    //                 'value': 'add',  
+    //                 'iconPosition': 'left',
+    //                 'variant': 'brand-outline'
+    //             }, 
+    //             {'label': 'Add TBD',
+    //             'title': 'Add TBD',
+    //             'name': 'Add TBD',
+    //             'disabled': false,
+    //             'value': 'addTbd',  
+    //             'iconPosition': 'left',
+    //             'variant': 'brand-outline'});
+    //         } else {
+    //             actions.push({
+    //                 'label': 'Add',
+    //                 'title': 'Add',
+    //                 'name': 'Add',
+    //                 'disabled': false,
+    //                 'value': 'add',  
+    //                 'iconPosition': 'left',
+    //                 'variant': 'brand-outline'
+    //             }, 
+    //             {'label': 'Add TBD',
+    //             'title': 'Add TBD',
+    //             'name': 'Add TBD',
+    //             'disabled': true,
+    //             'value': 'addTbd',  
+    //             'iconPosition': 'left',
+    //             'variant': 'brand-outline'}
+    //             );
+    //         }
+    //         // simulate a trip to the server
+    //         setTimeout(() => {
+    //             doneCallback(actions);
+    //         }), 200);
+    // }
 
     handleSearch(event) {
         let queryTerm = event.target.value;
@@ -128,7 +195,7 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
     }
 
     removeRowsFromSearchResultsTable(record) {
-        // console.log('Record being added: '+record);
+        console.log('Record being added: '+record);
         // this.addRecordsToSelectedProductsTable(record);
         let newData = JSON.parse(JSON.stringify(this.collection));
         newData = newData.filter((row) => row.Id !== record);
