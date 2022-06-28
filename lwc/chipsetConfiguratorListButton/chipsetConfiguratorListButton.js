@@ -2,16 +2,20 @@
  * @description       : 
  * @author            : pchannab
  * @usage             : 
- * @last modified on  : 06-24-2022
+ * @last modified on  : 06-27-2022
  * @last modified by  : pchannab
 **/
 import { LightningElement, track } from 'lwc';
 import search from '@salesforce/apex/ChipsetConfiguratorCmpController.searchProducts';
 
 const searchResultsTableColumns = [
-    {label: 'Chip Family', fieldName: 'ChipFamily', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
-    {label: 'Name', fieldName: 'Name', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
-    {label: 'Primary', fieldName: 'Primary', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'Chip Family', fieldName: 'ChipFamily', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'CP EPR Family', fieldName: 'EPRFamily', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
+    {label: 'CP EPR Sub-Family', fieldName: 'EPRSubfamily', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'Name', fieldName: 'Name', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'Chip Product', fieldName: 'ChipProduct', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'Product Code', fieldName: 'ProductCode', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'Primary/Attached', fieldName: 'Primary', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
     {type: "button", typeAttributes: {  
         label: 'Add',  
         name: 'Add',  
@@ -29,12 +33,17 @@ const searchResultsTableColumns = [
         value: 'addTbd',  
         iconPosition: 'left',
         variant: 'brand-outline',
-        class: {fieldName: 'showTBDButton'}
+        // class: {fieldName: 'showTBDButton'}
     }}
 ];
 
 const selectedProductsTableColumn = [
     {label: 'Chip Family', fieldName: 'ChipFamily', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'CP EPR Family', fieldName: 'EPRFamily', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
+    {label: 'CP EPR Sub-Family', fieldName: 'EPRSubfamily', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'Primary/Attached', fieldName: 'Primary', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'Chip Product', fieldName: 'ChipProduct', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'Product Code', fieldName: 'ProductCode', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},    
     {label: 'Name', fieldName: 'Name', editable: false, sortable: false, hideDefaultActions: true, wrapText: true}
 ];
 
