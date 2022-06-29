@@ -2,7 +2,7 @@
   @name              : chipsetConfiguratorListButton.html
   @author            : pchannab
   @usage             : 
-  @last modified on  : 06-24-2022
+  @last modified on  : 06-28-2022
   @last modified by  : pchannab
   Modifications Log
   Ver   Date         Author     Modification
@@ -42,14 +42,22 @@
     </lightning-layout>
     <div class="slds-p-around_medium slds-m-top_large"><lightning-badge label="Selected Products" icon-name="utility:table_settings"></lightning-badge></div>
     <div class="slds-p-around_medium" style="height:300px">
-      <lightning-datatable
-      show-row-number-column
-      hide-checkbox-column
+      <!-- <lightning-datatable
+      show-row-number-column      
       key-field="Id"
       data={recordsAdded}
       columns={selectedProductsTableColumn}
+      max-row-selection="1"
       >
-      </lightning-datatable>
+      </lightning-datatable> -->
+      <c-chipset-config-custom-datatable
+      key-field="Id"
+      data={recordsAdded}
+      onradio={radioButtonClick}
+      columns={selectedProductsTableColumn}
+      show-row-number-column
+      hide-checkbox-column
+      ></c-chipset-config-custom-datatable>
     </div>
     <div class="slds-p-around_medium" style="height:500px">
     <lightning-badge label="Search Results" icon-name="utility:table_settings"></lightning-badge>

@@ -2,7 +2,7 @@
  * @description       : 
  * @author            : pchannab
  * @usage             : 
- * @last modified on  : 06-27-2022
+ * @last modified on  : 06-28-2022
  * @last modified by  : pchannab
 **/
 import { LightningElement, track } from 'lwc';
@@ -38,6 +38,7 @@ const searchResultsTableColumns = [
 ];
 
 const selectedProductsTableColumn = [
+    {label: 'Choose Primary', type: 'radio', typeAttributes: {value: {fieldName: 'Id'}}, sortable: false},
     {label: 'Chip Family', fieldName: 'ChipFamily', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
     {label: 'CP EPR Family', fieldName: 'EPRFamily', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
     {label: 'CP EPR Sub-Family', fieldName: 'EPRSubfamily', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
@@ -46,6 +47,17 @@ const selectedProductsTableColumn = [
     {label: 'Product Code', fieldName: 'ProductCode', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},    
     {label: 'Name', fieldName: 'Name', editable: false, sortable: false, hideDefaultActions: true, wrapText: true}
 ];
+
+// const customDatatableCols = [
+//     {label: 'Chip Family', fieldName: 'ChipFamily', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+//     {label: 'Choose Primary', type: 'radio', typeAttributes: {value: {fieldName: 'Id'}}, sortable: false},
+//     {label: 'CP EPR Family', fieldName: 'EPRFamily', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
+//     {label: 'CP EPR Sub-Family', fieldName: 'EPRSubfamily', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+//     {label: 'Primary/Attached', fieldName: 'Primary', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+//     {label: 'Chip Product', fieldName: 'ChipProduct', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+//     {label: 'Product Code', fieldName: 'ProductCode', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},    
+//     {label: 'Name', fieldName: 'Name', editable: false, sortable: false, hideDefaultActions: true, wrapText: true}
+// ];
 
 export default class ChipsetConfiguratorListButton extends LightningElement {
 
@@ -58,6 +70,7 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
     tbdRecordsAdded = [];
     searchResultsTableColumns = searchResultsTableColumns;
     selectedProductsTableColumn = selectedProductsTableColumn;
+    // customDatatableCols = customDatatableCols;
     searchResultsDropdown = false;
     defaultSortDirection = 'asc';
     sortDirection = 'asc';
@@ -228,6 +241,15 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
         console.log('Checkbox: '+JSON.stringify(event.detail.draftValues));
         this.tbdRecordsAdded.push(event.detail.draftValues[0]);
         console.log('tbdRecordsAdded: '+JSON.stringify(this.tbdRecordsAdded));
+    }
+
+    radioButtonClick(event) {
+        // console.log('Radio Clicked: Before preventDefault');
+        // event.preventDefault();
+        // console.log('Radio Clicked');
+        let dataReceived = event.detail.value;
+        console.log("🚀 ~ file: chipsetConfiguratorListButton.js ~ line 248 ~ ChipsetConfiguratorListButton ~ radioButtonClick ~ dataReceived: "+ dataReceived);
+        
     }
 
     sortBy(field, reverse, primer) {
