@@ -2,14 +2,14 @@
  * @description       : 
  * @author            : pchannab
  * @usage             : 
- * @last modified on  : 06-28-2022
+ * @last modified on  : 06-30-2022
  * @last modified by  : pchannab
 **/
 import { LightningElement, track } from 'lwc';
 import search from '@salesforce/apex/ChipsetConfiguratorCmpController.searchProducts';
 
 const searchResultsTableColumns = [
-    {label: 'Chip Family', fieldName: 'ChipFamily', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'Chip Family', fieldName: 'ChipFamily', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
     {label: 'CP EPR Family', fieldName: 'EPRFamily', editable: false, sortable: true, hideDefaultActions: true, wrapText: true},
     {label: 'CP EPR Sub-Family', fieldName: 'EPRSubfamily', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
     {label: 'Name', fieldName: 'Name', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
@@ -45,7 +45,19 @@ const selectedProductsTableColumn = [
     {label: 'Primary/Attached', fieldName: 'Primary', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
     {label: 'Chip Product', fieldName: 'ChipProduct', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},
     {label: 'Product Code', fieldName: 'ProductCode', editable: false, sortable: false, hideDefaultActions: true, wrapText: true},    
-    {label: 'Name', fieldName: 'Name', editable: false, sortable: false, hideDefaultActions: true, wrapText: true}
+    {label: 'Lifetime Quantity', type: 'number', typeAttributes: {minimumFractionDigits: '0', maximumFractionDigits: '0'}, editable: true, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'Attach Rate', type: 'number', typeAttributes: {minimumFractionDigits: '2', maximumFractionDigits: '2'}, editable: true, sortable: false, hideDefaultActions: true, wrapText: true},
+    {label: 'Sales Price', type: 'number', typeAttributes: {minimumFractionDigits: '2', maximumFractionDigits: '2'}, editable: true, sortable: false, hideDefaultActions: true, wrapText: true},
+    {type: "button", typeAttributes: {  
+        label: 'Remove',  
+        name: 'Remove',  
+        title: 'Remove',  
+        disabled: false,  
+        value: 'remove',  
+        iconPosition: 'left',
+        variant: 'destructive'
+        // class: {fieldName: 'showTBDButton'}
+    }}
 ];
 
 // const customDatatableCols = [
@@ -150,9 +162,10 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
             this.searchTerm = queryTerm;
             search({chipName : queryTerm})
             .then(result => {            
-                console.log('JSON '+JSON.stringify(result));
+                // console.log('JSON '+JSON.stringify(result));
                 if(result.length > 0 && result !== undefined) {
                     this.searchResults = result;
+                    // console.log("🚀 ~ file: chipsetConfiguratorListButton.js ~ line 166 ~ searchResults", JSON.stringify(this.searchResults));
                     this.collection = this.searchResults;
                     this.searchResultsDropdown = true;
                     if(event.keyCode === 13){
@@ -203,38 +216,66 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
 
     callRowAction(event) {            
         const recId = event.detail.row.Id;
-        console.log('Add clicked: '+recId);
+        console.log('Action Button clicked: '+event.detail.action.name+', '+recId);
+        console.log('Row Action: '+JSON.stringify(event.detail));
+        if(event.detail.action.name === 'Remove' && recId) {
+            console.log('Remove event from Selected products table');
+            this.removeRowsFromSearchResultsTable(recId, 'selectedProductsTable');
+        }
         // this.collection.splice(this.collection.findIndex(obj => obj.Id === recId), 1);
         // console.log(this.searchResults.findIndex(obj => {
         //         return obj.Id === this.tbdRecordsAdded[0].Id;}));
-        
-        if((this.tbdRecordsAdded.length === 1 && recId === this.tbdRecordsAdded[0].Id) || (this.tbdRecordsAdded.length === 0 && recId)) {
-            this.tbdRecordsAdded = [];
-            this.removeRowsFromSearchResultsTable(recId);
-        }        
+        if(event.detail.action.name === 'Add'){
+            if((this.tbdRecordsAdded.length === 1 && recId === this.tbdRecordsAdded[0].Id) || (this.tbdRecordsAdded.length === 0 && recId)) {
+                this.tbdRecordsAdded = [];
+                this.removeRowsFromSearchResultsTable(recId, 'searchResultsTable');
+            }
+        }
         
         // this.recordsAdded
     }
 
-    removeRowsFromSearchResultsTable(record) {
+    removeRowsFromSearchResultsTable(record, tableIdentifier) {
+        let recordCollection;
+        if(tableIdentifier === 'searchResultsTable') {
+            recordCollection = this.collection;
+        }
+        if(tableIdentifier === 'selectedProductsTable') {
+            recordCollection = this.recordsAdded;
+        }
         console.log('Record being added: '+record);
         // this.addRecordsToSelectedProductsTable(record);
-        let newData = JSON.parse(JSON.stringify(this.collection));
+        let newData = JSON.parse(JSON.stringify(recordCollection));
         newData = newData.filter((row) => row.Id !== record);
-        let addedData = JSON.parse(JSON.stringify(this.collection));        
+        console.log("🚀 ~ newData", JSON.stringify(newData));
+        let addedData = JSON.parse(JSON.stringify(recordCollection));        
         addedData = addedData.filter((row) => row.Id === record);
+        console.log("🚀 ~ addedData", JSON.stringify(addedData));
         if(addedData.length > 0) {
-            this.addRecordsToSelectedProductsTable(addedData[0]);
+            this.addRecordsToSelectedProductsTable(addedData[0], tableIdentifier);
             
             console.log('Here: '+JSON.stringify(this.recordsAdded));
         }
-        this.collection = newData;
-        console.log('Removed Item: '+JSON.stringify(this.collection));
+        if(tableIdentifier === 'searchResultsTable') {
+            this.collection = newData;
+            console.log("🚀 ~ file: chipsetConfiguratorListButton.js ~ line 257 ~ collection", JSON.stringify(this.collection));
+            console.log('Removed Item: '+JSON.stringify(this.collection));
+        }
+        if(tableIdentifier === 'selectedProductsTable') {
+            this.recordsAdded = newData;
+            console.log("🚀 ~ file: chipsetConfiguratorListButton.js ~ line 263 ~ recordsAdded", JSON.stringify(this.recordsAdded));
+        }
     }
 
-    addRecordsToSelectedProductsTable(addedRecord) {   
-        this.recordsAdded = this.recordsAdded.concat(addedRecord);
-        console.log('Added Record: '+JSON.stringify(this.recordsAdded));
+    addRecordsToSelectedProductsTable(addedRecord, tableIdentifier) {   
+        if(tableIdentifier === 'searchResultsTable') {
+            this.recordsAdded = this.recordsAdded.concat(addedRecord);
+            console.log('Added Record: '+JSON.stringify(this.recordsAdded));
+        }
+        if(tableIdentifier === 'selectedProductsTable') {
+            this.collection = this.collection.concat(addedRecord);
+            console.log("🚀 ~  addRecordsToSelectedProductsTable ~ collection", this.collection)
+        }
     }
 
     getSelectedTBDProductRow(event) {
@@ -276,5 +317,6 @@ export default class ChipsetConfiguratorListButton extends LightningElement {
         this.collection = cloneData;
         this.sortDirection = sortDirection;
         this.sortedBy = sortedBy;
+        console.log("🚀 ~ file: chipsetConfiguratorListButton.js ~ line 317 ~ sortedBy", this.sortedBy);
     }
 }
